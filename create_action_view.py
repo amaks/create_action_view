@@ -19,6 +19,7 @@ class CreateActionViewCommand(sublime_plugin.TextCommand):
         line_text   = self.view.substr(line)
         action_name = line_text.split('def ')[1].strip()
 
+
     self.view.window().show_input_panel("File with extension: ", action_name + '.' + extension, self.get_selected_text, None, None)
 
   def get_selected_text(self, file_with_extension):
@@ -31,7 +32,12 @@ class CreateActionViewCommand(sublime_plugin.TextCommand):
   def detect_extensiton(self, file_name):
     file_path       = os.path.dirname(file_name)
     rails_view_path = os.path.dirname(file_path)
-    layouts_folder = rails_view_path + '/views/layouts/'
+
+    if 'controllers' in rails_view_path:
+      layouts_folder = rails_view_path.replace('controllers', 'views') + '/layouts/'
+    else:
+      layouts_folder = rails_view_path + '/views/layouts/'
+
     for file in os.listdir(layouts_folder):
       if 'application' in file:
         return file.split('.')[1]
